@@ -7,25 +7,37 @@ import Downloads from './components/Downloads';
 import PrivacySection from './components/PrivacySection';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
+import IntroScreen from './components/IntroScreen';
+import AudioControls from './components/AudioControls';
+import { AudioProvider } from './context/AudioContext';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-white/20 selection:text-white">
-      {/* Minimalist Top Navigation */}
-      <Navbar />
+    <AudioProvider>
+      <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-white/20 selection:text-white relative">
+        {/* Minimalist Black and White Welcome & Autoplay Trigger */}
+        <IntroScreen />
 
-      {/* Main Sections */}
-      <main className="flex-1">
-        <Hero />
-        <Features />
-        <HowItWorks />
-        <Downloads />
-        <PrivacySection />
-        <FinalCTA />
-      </main>
+        {/* Minimalist Top Navigation */}
+        <Navbar />
 
-      {/* Footer */}
-      <Footer />
-    </div>
+        {/* Main Sections */}
+        <main className="flex-1">
+          <Hero />
+          <Features />
+          <HowItWorks />
+          <Downloads />
+          <PrivacySection />
+          <FinalCTA />
+        </main>
+
+        {/* Floating Real-Time Audio Control Pill */}
+        <AudioControls />
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </AudioProvider>
   );
 }
+

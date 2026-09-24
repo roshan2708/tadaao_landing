@@ -1,13 +1,16 @@
 import React, { useState, useRef } from 'react';
 import { ArrowDownToLine, Terminal, Copy, Check, ShieldCheck, Laptop, Smartphone, FileArchive } from 'lucide-react';
+
 import tadaaoDarkLogo from '../assets/tadaao-dark.png';
 import { DOWNLOAD_LINKS } from '../constants/downloads';
 import { GitHubLogo, AppleLogo, WindowsLogo, LinuxLogo, AndroidLogo } from './DeviceLogos';
+import { useAudio } from '../context/useAudio';
 
 export default function Hero() {
   const [copied, setCopied] = useState(false);
   const cardRef = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const { isPlaying, isMuted, bassIntensity, currentColor } = useAudio();
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -31,28 +34,74 @@ export default function Hero() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const isBassActive = isPlaying && !isMuted;
+
+  // Dynamic bass-reactive spotlight styling
+  const fixtureStyle = isBassActive
+    ? {
+        backgroundColor: currentColor.hex,
+        boxShadow: `0 0 ${20 + bassIntensity * 40}px 3px ${currentColor.hex}, 0 0 ${50 + bassIntensity * 90}px 8px rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, 0.7)`,
+        transform: `scaleX(${1 + bassIntensity * 0.15})`,
+        transition: 'background-color 0.25s ease-out, transform 0.06s ease-out',
+      }
+    : undefined;
+
+  const beamStyle = isBassActive
+    ? {
+        background: `linear-gradient(180deg, 
+          rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.28 + bassIntensity * 0.48}) 0%, 
+          rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.11 + bassIntensity * 0.26}) 35%, 
+          rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.02 + bassIntensity * 0.08}) 75%, 
+          transparent 100%
+        )`,
+        filter: `blur(${Math.max(8, 14 - bassIntensity * 5)}px)`,
+        transform: `translateX(-50%) scale(${1 + bassIntensity * 0.07})`,
+        transition: 'background 0.22s ease-out, transform 0.06s ease-out',
+      }
+    : undefined;
+
+  const ambientStyle = isBassActive
+    ? {
+        background: `radial-gradient(ellipse at 50% 0%, rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.22 + bassIntensity * 0.40}) 0%, transparent 70%)`,
+        filter: `blur(${Math.max(16, 28 - bassIntensity * 6)}px)`,
+        transition: 'background 0.25s ease-out',
+      }
+    : undefined;
+
+  const emblemStyle = isBassActive
+    ? {
+        borderColor: `rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.25 + bassIntensity * 0.55})`,
+        boxShadow: `0 15px 45px -12px rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.35 + bassIntensity * 0.5})`,
+        transform: `scale(${1 + bassIntensity * 0.04})`,
+        transition: 'border-color 0.25s ease-out, box-shadow 0.25s ease-out, transform 0.08s ease-out',
+      }
+    : undefined;
+
   return (
     <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden bg-black">
       {/* Background Architectural Grid */}
       <div className="absolute inset-0 bg-grid-minimal opacity-30 pointer-events-none" />
 
       {/* OVERHEAD SPOTLIGHT FIXTURE & DOWNWARD BEAM
-          Directly inspired by the reference design: horizontal top light fixture casting conical downward illumination */}
+          Synchronized to audio bass frequencies with real-time dynamic color switching */}
       <div className="relative flex flex-col items-center justify-center">
         {/* Ambient Top Light Glow */}
-        <div className="spotlight-ambient" />
+        <div className="spotlight-ambient" style={ambientStyle} />
 
         {/* Crisp Overhead Horizontal Light Bar */}
         <div className="relative z-10 flex flex-col items-center">
-          <div className="spotlight-fixture" />
+          <div className="spotlight-fixture" style={fixtureStyle} />
         </div>
 
         {/* Downward Volumetric Light Beam */}
-        <div className="spotlight-beam" />
+        <div className="spotlight-beam" style={beamStyle} />
 
         {/* Spotlight Focus: Brand Emblem resting in the beam */}
         <div className="relative z-20 mt-10 mb-8 flex flex-col items-center">
-          <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border border-white/20 bg-black flex items-center justify-center p-3 shadow-[0_15px_40px_-15px_rgba(255,255,255,0.25)] transition-transform duration-500 hover:scale-105">
+          <div
+            className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border border-white/20 bg-black flex items-center justify-center p-3 shadow-[0_15px_40px_-15px_rgba(255,255,255,0.25)] transition-transform duration-500 hover:scale-105"
+            style={emblemStyle}
+          >
             <img
               src={tadaaoDarkLogo}
               alt="Tadaao Emblem"
@@ -60,12 +109,41 @@ export default function Hero() {
             />
           </div>
 
-          {/* Senior Dev Monospaced Pill Badge */}
-          <div className="mt-4 inline-flex items-center gap-2.5 px-3.5 py-1 rounded-full border border-white/15 bg-transparent text-[11px] font-mono tracking-wider text-neutral-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            <span className="uppercase text-white">Direct Socket Mesh</span>
-            <span className="text-neutral-600">•</span>
-            <span className="text-neutral-400">Zero Cloud Relay</span>
+          {/* Telemetry Pills */}
+          <div className="mt-4 flex flex-col sm:flex-row items-center gap-2">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1 rounded-full border border-white/15 bg-transparent text-[11px] font-mono tracking-wider text-neutral-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              <span className="uppercase text-white">Direct Socket Mesh</span>
+              <span className="text-neutral-600">•</span>
+              <span className="text-neutral-400">Zero Cloud Relay</span>
+            </div>
+
+            {/* Live Bass Sync Indicator */}
+            {isBassActive && (
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-black/70 text-[10px] font-mono tracking-wider transition-all duration-300"
+                style={{
+                  borderColor: `rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, 0.35)`,
+                  boxShadow: `0 0 15px -3px rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, 0.25)`,
+                }}
+              >
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{
+                    backgroundColor: currentColor.hex,
+                    boxShadow: `0 0 6px ${currentColor.hex}`,
+                  }}
+                />
+                <span className="text-neutral-400 uppercase">Bass Sync:</span>
+                <span className="font-semibold" style={{ color: currentColor.hex }}>
+                  {currentColor.name}
+                </span>
+                <span className="text-neutral-600">•</span>
+                <span className="text-neutral-300 font-bold">
+                  {Math.round(bassIntensity * 100)}%
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
