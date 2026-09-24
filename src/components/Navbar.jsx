@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowDownToLine } from 'lucide-react';
 import tadaaoDarkLogo from '../assets/tadaao-dark.png';
-import { DOWNLOAD_LINKS } from '../constants/downloads';
-import { GitHubLogo } from './DeviceLogos';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -65,20 +63,8 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Right Desktop Actions: GitHub & Download Pill */}
+        {/* Right Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
-          <a
-            href={DOWNLOAD_LINKS.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            id="navbar-github-link"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-transparent hover:border-white/40 text-neutral-300 hover:text-white text-xs font-mono transition-all"
-            aria-label="View Tadaao on GitHub"
-          >
-            <GitHubLogo className="w-3.5 h-3.5 text-white" />
-            <span>GitHub</span>
-          </a>
-
           <a
             href="#downloads"
             id="navbar-download-button"
@@ -126,17 +112,6 @@ export default function Navbar() {
           </div>
 
           <div className="pt-2 flex flex-col gap-2.5">
-            <a
-              href={DOWNLOAD_LINKS.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-white/15 text-xs font-mono text-neutral-300 hover:text-white transition-colors"
-            >
-              <GitHubLogo className="w-4 h-4 text-white" />
-              Source on GitHub
-            </a>
-
             <a
               href="#downloads"
               onClick={() => setMobileMenuOpen(false)}

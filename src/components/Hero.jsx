@@ -1,13 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { ArrowDownToLine, Terminal, Copy, Check, ShieldCheck, Laptop, Smartphone, FileArchive } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { ArrowDownToLine, ShieldCheck, Laptop, Smartphone, FileArchive } from 'lucide-react';
 
 import tadaaoDarkLogo from '../assets/tadaao-dark.png';
 import { DOWNLOAD_LINKS } from '../constants/downloads';
-import { GitHubLogo, AppleLogo, WindowsLogo, LinuxLogo, AndroidLogo } from './DeviceLogos';
+import { AppleLogo, WindowsLogo, AndroidLogo } from './DeviceLogos';
 import { useAudio } from '../context/useAudio';
 
 export default function Hero() {
-  const [copied, setCopied] = useState(false);
   const cardRef = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const { isPlaying, isMuted, bassIntensity, currentColor } = useAudio();
@@ -17,7 +16,6 @@ export default function Hero() {
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
-    // Subtle 3D tilt calculation
     setRotate({
       x: -(y / rect.height) * 12,
       y: (x / rect.width) * 12,
@@ -26,12 +24,6 @@ export default function Hero() {
 
   const handleMouseLeave = () => {
     setRotate({ x: 0, y: 0 });
-  };
-
-  const handleCopyCommand = () => {
-    navigator.clipboard.writeText('brew install tadaao');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const isBassActive = isPlaying && !isMuted;
@@ -82,8 +74,7 @@ export default function Hero() {
       {/* Background Architectural Grid */}
       <div className="absolute inset-0 bg-grid-minimal opacity-30 pointer-events-none" />
 
-      {/* OVERHEAD SPOTLIGHT FIXTURE & DOWNWARD BEAM
-          Synchronized to audio bass frequencies with real-time dynamic color switching */}
+      {/* OVERHEAD SPOTLIGHT FIXTURE & DOWNWARD BEAM */}
       <div className="relative flex flex-col items-center justify-center">
         {/* Ambient Top Light Glow */}
         <div className="spotlight-ambient" style={ambientStyle} />
@@ -96,7 +87,7 @@ export default function Hero() {
         {/* Downward Volumetric Light Beam */}
         <div className="spotlight-beam" style={beamStyle} />
 
-        {/* Spotlight Focus: Brand Emblem resting in the beam */}
+        {/* Spotlight Focus: Brand Emblem */}
         <div className="relative z-20 mt-10 mb-8 flex flex-col items-center">
           <div
             className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border border-white/20 bg-black flex items-center justify-center p-3 shadow-[0_15px_40px_-15px_rgba(255,255,255,0.25)] transition-transform duration-500 hover:scale-105"
@@ -155,85 +146,60 @@ export default function Hero() {
         </h1>
 
         <p className="max-w-2xl mx-auto text-base sm:text-lg text-neutral-400 leading-relaxed mb-10 font-normal">
-          Minimalist, high-throughput peer-to-peer file sharing across your ecosystem.
-          Direct device-to-device streaming with zero cloud intermediaries and wire-speed LAN execution.
+          Minimalist, high-speed peer-to-peer file sharing across your devices.
+          Direct device-to-device streaming with zero cloud intermediaries.
         </p>
 
-        {/* Action Buttons & Terminal Snippet */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-          {/* Main Download Button */}
+        {/* Action Download Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
           <a
-            href="#downloads"
-            id="hero-download-cta"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            href={DOWNLOAD_LINKS.macos}
+            id="hero-download-macos"
+            download
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
           >
-            <ArrowDownToLine className="w-4 h-4 stroke-[2.2]" />
-            Download Tadaao
+            <AppleLogo className="w-4 h-4" />
+            Download macOS
           </a>
 
-          {/* GitHub Source Link */}
           <a
-            href={DOWNLOAD_LINKS.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            id="hero-github-cta"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs font-mono uppercase tracking-wider text-white bg-transparent hover:text-white border border-white/15 hover:border-white/40 rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-white"
+            href={DOWNLOAD_LINKS.windows}
+            id="hero-download-windows"
+            download
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
           >
-            <GitHubLogo className="w-4 h-4 text-white" />
-            <span>GitHub Repository</span>
+            <WindowsLogo className="w-3.5 h-3.5" />
+            Download Windows
           </a>
 
-          {/* Quick Copy Terminal Command */}
-          <button
-            type="button"
-            onClick={handleCopyCommand}
-            id="hero-copy-command"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3.5 text-xs font-mono text-neutral-400 hover:text-white bg-transparent border border-white/10 hover:border-white/30 rounded-full transition-all"
-            title="Copy brew command"
+          <a
+            href={DOWNLOAD_LINKS.android}
+            id="hero-download-android"
+            download
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
           >
-            <Terminal className="w-3.5 h-3.5 text-neutral-400" />
-            <span>brew install tadaao</span>
-            {copied ? (
-              <Check className="w-3.5 h-3.5 text-white" />
-            ) : (
-              <Copy className="w-3.5 h-3.5 text-neutral-500" />
-            )}
-          </button>
+            <AndroidLogo className="w-4 h-4" />
+            Download APK
+          </a>
         </div>
 
-        {/* OS Compatibility Logos Row */}
-        <div className="flex items-center justify-center gap-6 mb-16 text-neutral-500 text-xs font-mono">
-          <span className="text-neutral-500">Universal Support:</span>
-          <div className="flex items-center gap-4 text-neutral-300">
-            <span className="flex items-center gap-1.5" title="macOS">
-              <AppleLogo className="w-4 h-4 text-white" />
-              <span>macOS</span>
-            </span>
-            <span className="text-neutral-700">•</span>
-            <span className="flex items-center gap-1.5" title="Windows">
-              <WindowsLogo className="w-3.5 h-3.5 text-white" />
-              <span>Windows</span>
-            </span>
-            <span className="text-neutral-700">•</span>
-            <span className="flex items-center gap-1.5" title="Linux">
-              <LinuxLogo className="w-4 h-4 text-white" />
-              <span>Linux</span>
-            </span>
-            <span className="text-neutral-700">•</span>
-            <span className="flex items-center gap-1.5" title="Android">
-              <AndroidLogo className="w-4 h-4 text-white" />
-              <span>Android</span>
-            </span>
-            <span className="text-neutral-700">•</span>
-            <span className="flex items-center gap-1.5" title="iOS">
-              <AppleLogo className="w-4 h-4 text-white" />
-              <span>iOS</span>
-            </span>
-          </div>
+        {/* OS Compatibility Row */}
+        <div className="flex items-center justify-center gap-4 mb-16 text-neutral-400 text-xs font-mono">
+          <span className="text-neutral-500">Supported:</span>
+          <span className="flex items-center gap-1.5 text-neutral-300">
+            <AppleLogo className="w-3.5 h-3.5 text-white" /> macOS
+          </span>
+          <span className="text-neutral-700">•</span>
+          <span className="flex items-center gap-1.5 text-neutral-300">
+            <WindowsLogo className="w-3 h-3 text-white" /> Windows
+          </span>
+          <span className="text-neutral-700">•</span>
+          <span className="flex items-center gap-1.5 text-neutral-300">
+            <AndroidLogo className="w-3.5 h-3.5 text-white" /> Android
+          </span>
         </div>
 
-        {/* 3D INTERACTIVE PERSPECTIVE TRANSFER MATRIX
-            Fully transparent container with crisp white border and interactive 3D perspective */}
+        {/* 3D Interactive Perspective Transfer Diagram */}
         <div
           className="max-w-4xl mx-auto perspective-1000"
           onMouseMove={handleMouseMove}
@@ -247,7 +213,7 @@ export default function Hero() {
             }}
             className="relative rounded-2xl bg-transparent border border-white/15 p-6 sm:p-8 backdrop-blur-none transform-style-3d shadow-[0_30px_70px_-20px_rgba(0,0,0,0.8)]"
           >
-            {/* Top Telemetry Header Bar */}
+            {/* Top Bar */}
             <div className="flex flex-wrap items-center justify-between pb-5 mb-6 border-b border-white/10 text-xs font-mono text-neutral-400 gap-3">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-white" />
@@ -306,7 +272,7 @@ export default function Hero() {
                 <div className="w-12 h-12 rounded-xl border border-white/15 flex items-center justify-center text-white mb-3 bg-transparent">
                   <Smartphone className="w-6 h-6 stroke-[1.5]" />
                 </div>
-                <div className="text-sm font-semibold text-white">iPhone 16 Pro</div>
+                <div className="text-sm font-semibold text-white">Pixel 9 / iPhone</div>
                 <div className="text-[11px] font-mono text-neutral-500 mt-0.5">192.168.1.189:7443</div>
                 <div className="mt-3 px-2 py-0.5 rounded text-[10px] font-mono text-white border border-white/20 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -319,7 +285,7 @@ export default function Hero() {
             <div className="mt-6 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-neutral-500 gap-2">
               <span className="flex items-center gap-2">
                 <ShieldCheck className="w-3.5 h-3.5 text-white" />
-                Zero intermediary telemetry. Payload decrypted locally in RAM.
+                Direct local network transmission. Zero cloud relay.
               </span>
               <span className="text-neutral-400">Direct TCP Socket Mesh</span>
             </div>
