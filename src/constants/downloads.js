@@ -1,6 +1,6 @@
 export const DOWNLOAD_LINKS = {
   macos: "https://github.com/roshan2708/tadaao_landing/releases/download/v01/Tadaao.dmg",
-  windows: "https://github.com/roshan2708/tadaao_landing/releases/download/v01/Tadaao-Windows.zip",
+  windows: "https://github.com/roshan2708/sharingApp/releases/download/V01/Tadaao.zip",
   android: "https://github.com/roshan2708/tadaao_landing/releases/download/v01/app-release.apk",
 };
 
