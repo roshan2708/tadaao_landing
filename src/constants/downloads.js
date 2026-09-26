@@ -17,7 +17,12 @@ export const PLATFORM_INFO = [
     steps: [
       { step: "1", text: "Open the downloaded .dmg file" },
       { step: "2", text: "Drag Tadaao into Applications in Finder" },
-      { step: "3", text: "Launch Tadaao directly from Applications" },
+      { step: "3", text: "Open Tadaao from Applications" },
+      {
+        step: "4",
+        text: "If macOS prevents opening: Go to System Settings → Privacy & Security, scroll down to Security, and click 'Open Anyway'",
+        highlight: true,
+      },
     ],
   },
   {
