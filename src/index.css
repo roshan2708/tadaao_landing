@@ -123,3 +123,26 @@ body {
 .translate-z-30 {
   transform: translateZ(30px);
 }
+
+@keyframes floatBump {
+  0% {
+    opacity: 0;
+    transform: translateY(2px) scale(0.7);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.15);
+  }
+  70% {
+    opacity: 0.9;
+    transform: translateY(-16px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.9);
+  }
+}
+
+.animate-float-bump {
+  animation: floatBump 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

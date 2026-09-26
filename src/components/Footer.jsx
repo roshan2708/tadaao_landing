@@ -1,9 +1,10 @@
 import React from 'react';
 import tadaaoDarkLogo from '../assets/tadaao-dark.png';
-import { DOWNLOAD_LINKS } from '../constants/downloads';
+import { useDownloads } from '../context/DownloadsContext';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { links, handleDownload } = useDownloads();
 
   return (
     <footer className="border-t border-white/10 bg-black py-12 text-neutral-400">
@@ -37,13 +38,31 @@ export default function Footer() {
             <a href="#downloads" className="hover:text-white transition-colors">
               Downloads
             </a>
-            <a href={DOWNLOAD_LINKS.macos} download className="hover:text-white transition-colors">
+            <a href="#feedback" className="hover:text-white transition-colors">
+              Found a Bug?
+            </a>
+            <a
+              href={links.macos}
+              download
+              onClick={() => handleDownload('macos', '.dmg')}
+              className="hover:text-white transition-colors"
+            >
               macOS (.dmg)
             </a>
-            <a href={DOWNLOAD_LINKS.windows} download className="hover:text-white transition-colors">
+            <a
+              href={links.windows}
+              download
+              onClick={() => handleDownload('windows', '.zip')}
+              className="hover:text-white transition-colors"
+            >
               Windows (.zip)
             </a>
-            <a href={DOWNLOAD_LINKS.android} download className="hover:text-white transition-colors">
+            <a
+              href={links.android}
+              download
+              onClick={() => handleDownload('android', '.apk')}
+              className="hover:text-white transition-colors"
+            >
               Android (.apk)
             </a>
           </div>

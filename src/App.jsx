@@ -5,16 +5,19 @@ import Features from './components/Features';
 import HowItWorks from './components/HowItWorks';
 import Downloads from './components/Downloads';
 import PrivacySection from './components/PrivacySection';
+import CommunityFeedback from './components/CommunityFeedback';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import IntroScreen from './components/IntroScreen';
 import AudioControls from './components/AudioControls';
 import { AudioProvider } from './context/AudioContext';
+import { DownloadsProvider } from './context/DownloadsContext';
 
 export default function App() {
   return (
     <AudioProvider>
-      <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-white/20 selection:text-white relative">
+      <DownloadsProvider>
+        <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-white/20 selection:text-white relative">
         {/* Minimalist Black and White Welcome & Autoplay Trigger */}
         <IntroScreen />
 
@@ -28,6 +31,7 @@ export default function App() {
           <HowItWorks />
           <Downloads />
           <PrivacySection />
+          <CommunityFeedback />
           <FinalCTA />
         </main>
 
@@ -37,6 +41,7 @@ export default function App() {
         {/* Footer */}
         <Footer />
       </div>
+      </DownloadsProvider>
     </AudioProvider>
   );
 }

@@ -1,15 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { ArrowDownToLine, ShieldCheck, Laptop, Smartphone, FileArchive } from 'lucide-react';
 
-import tadaaoDarkLogo from '../assets/tadaao-dark.png';
-import { DOWNLOAD_LINKS } from '../constants/downloads';
 import { AppleLogo, WindowsLogo, AndroidLogo } from './DeviceLogos';
 import { useAudio } from '../context/useAudio';
+import { useDownloads } from '../context/DownloadsContext';
 
 export default function Hero() {
   const cardRef = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const { isPlaying, isMuted, bassIntensity, currentColor } = useAudio();
+  const { links, handleDownload } = useDownloads();
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -60,17 +60,8 @@ export default function Hero() {
       }
     : undefined;
 
-  const emblemStyle = isBassActive
-    ? {
-        borderColor: `rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.25 + bassIntensity * 0.55})`,
-        boxShadow: `0 15px 45px -12px rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${0.35 + bassIntensity * 0.5})`,
-        transform: `scale(${1 + bassIntensity * 0.04})`,
-        transition: 'border-color 0.25s ease-out, box-shadow 0.25s ease-out, transform 0.08s ease-out',
-      }
-    : undefined;
-
   return (
-    <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden bg-black">
+    <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden bg-black">
       {/* Background Architectural Grid */}
       <div className="absolute inset-0 bg-grid-minimal opacity-30 pointer-events-none" />
 
@@ -87,21 +78,10 @@ export default function Hero() {
         {/* Downward Volumetric Light Beam */}
         <div className="spotlight-beam" style={beamStyle} />
 
-        {/* Spotlight Focus: Brand Emblem */}
-        <div className="relative z-20 mt-10 mb-8 flex flex-col items-center">
-          <div
-            className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border border-white/20 bg-black flex items-center justify-center p-3 shadow-[0_15px_40px_-15px_rgba(255,255,255,0.25)] transition-transform duration-500 hover:scale-105"
-            style={emblemStyle}
-          >
-            <img
-              src={tadaaoDarkLogo}
-              alt="Tadaao Emblem"
-              className="w-full h-full object-contain filter drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]"
-            />
-          </div>
-
+        {/* Spotlight Telemetry Badges */}
+        <div className="relative z-20 mt-6 mb-8 flex flex-col items-center">
           {/* Telemetry Pills */}
-          <div className="mt-4 flex flex-col sm:flex-row items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-center gap-2">
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1 rounded-full border border-white/15 bg-transparent text-[11px] font-mono tracking-wider text-neutral-300">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               <span className="uppercase text-white">Direct Socket Mesh</span>
@@ -153,9 +133,10 @@ export default function Hero() {
         {/* Action Download Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
           <a
-            href={DOWNLOAD_LINKS.macos}
+            href={links.macos}
             id="hero-download-macos"
             download
+            onClick={() => handleDownload('macos', '.dmg')}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
           >
             <AppleLogo className="w-4 h-4" />
@@ -163,9 +144,10 @@ export default function Hero() {
           </a>
 
           <a
-            href={DOWNLOAD_LINKS.windows}
+            href={links.windows}
             id="hero-download-windows"
             download
+            onClick={() => handleDownload('windows', '.zip')}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
           >
             <WindowsLogo className="w-3.5 h-3.5" />
@@ -173,9 +155,10 @@ export default function Hero() {
           </a>
 
           <a
-            href={DOWNLOAD_LINKS.android}
+            href={links.android}
             id="hero-download-android"
             download
+            onClick={() => handleDownload('android', '.apk')}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
           >
             <AndroidLogo className="w-4 h-4" />

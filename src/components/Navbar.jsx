@@ -19,6 +19,7 @@ export default function Navbar() {
     { name: 'How It Works', href: '#how-it-works' },
     { name: 'Downloads', href: '#downloads' },
     { name: 'Architecture', href: '#architecture' },
+    { name: 'Feedback', href: '#feedback' },
   ];
 
   return (
