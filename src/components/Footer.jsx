@@ -41,6 +41,9 @@ export default function Footer() {
             <a href="#feedback" className="hover:text-white transition-colors">
               Found a Bug?
             </a>
+            <a href="/privacy.html" className="hover:text-white transition-colors">
+              Privacy Policy
+            </a>
             <a
               href={links.macos}
               download
@@ -88,8 +91,12 @@ export default function Footer() {
           <div>
             &copy; {currentYear} Tadaao. Zero cloud intermediaries.
           </div>
-          <div>
-            Direct Socket Transfer
+          <div className="flex items-center gap-4">
+            <a href="/privacy.html" className="hover:text-neutral-300 transition-colors">
+              Privacy Policy
+            </a>
+            <span>•</span>
+            <span>Direct Socket Transfer</span>
           </div>
         </div>
       </div>
