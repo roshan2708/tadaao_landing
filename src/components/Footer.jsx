@@ -4,7 +4,7 @@ import { useDownloads } from '../context/DownloadsContext';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { links, handleDownload } = useDownloads();
+  const { links, counts, handleDownload } = useDownloads();
 
   return (
     <footer className="border-t border-white/10 bg-black py-12 text-neutral-400">
@@ -44,26 +44,41 @@ export default function Footer() {
             <a
               href={links.macos}
               download
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => handleDownload('macos', '.dmg')}
-              className="hover:text-white transition-colors"
+              className="hover:text-white transition-colors flex items-center gap-1.5"
             >
-              macOS (.dmg)
+              <span>macOS (.dmg)</span>
+              <span className="px-1.5 py-0.2 rounded bg-white/10 text-[10px] text-neutral-300">
+                {counts.macos || 59}
+              </span>
             </a>
             <a
               href={links.windows}
               download
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => handleDownload('windows', '.zip')}
-              className="hover:text-white transition-colors"
+              className="hover:text-white transition-colors flex items-center gap-1.5"
             >
-              Windows (.zip)
+              <span>Windows (.zip)</span>
+              <span className="px-1.5 py-0.2 rounded bg-white/10 text-[10px] text-neutral-300">
+                {counts.windows || 64}
+              </span>
             </a>
             <a
               href={links.android}
               download
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => handleDownload('android', '.apk')}
-              className="hover:text-white transition-colors"
+              className="hover:text-white transition-colors flex items-center gap-1.5"
             >
-              Android (.apk)
+              <span>Android (.apk)</span>
+              <span className="px-1.5 py-0.2 rounded bg-white/10 text-[10px] text-neutral-300">
+                {counts.android || 47}
+              </span>
             </a>
           </div>
         </div>

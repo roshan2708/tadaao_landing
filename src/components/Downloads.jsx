@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowDownToLine, Radio } from 'lucide-react';
+import { ArrowDownToLine } from 'lucide-react';
 import { PLATFORM_INFO } from '../constants/downloads';
 import { AppleLogo, WindowsLogo, AndroidLogo } from './DeviceLogos';
 import { useDownloads } from '../context/DownloadsContext';
@@ -30,7 +30,7 @@ export default function Downloads() {
             {isFirebaseSynced ? (
               <>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Firebase Synced Releases
+                Firebase Synced • {counts.total || 170} Total Downloads
               </>
             ) : (
               'Downloads & Setup'
@@ -110,6 +110,8 @@ export default function Downloads() {
                     href={currentLink}
                     id={`download-btn-${platform.id}`}
                     download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => handleDownload(platform.id, platform.fileFormat)}
                     className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white active:scale-[0.98]"
                   >

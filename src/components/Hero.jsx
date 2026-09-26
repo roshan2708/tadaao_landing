@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ArrowDownToLine, ShieldCheck, Laptop, Smartphone, FileArchive } from 'lucide-react';
+import { ShieldCheck, Laptop, Smartphone, FileArchive } from 'lucide-react';
 
 import { AppleLogo, WindowsLogo, AndroidLogo } from './DeviceLogos';
 import { useAudio } from '../context/useAudio';
@@ -9,7 +9,7 @@ export default function Hero() {
   const cardRef = useRef(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const { isPlaying, isMuted, bassIntensity, currentColor } = useAudio();
-  const { links, handleDownload } = useDownloads();
+  const { links, counts, handleDownload, animatingPlatform } = useDownloads();
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -89,6 +89,15 @@ export default function Hero() {
               <span className="text-neutral-400">Zero Cloud Relay</span>
             </div>
 
+            {/* Realtime Live Total Downloads Counter */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-[11px] font-mono tracking-wider text-emerald-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-emerald-300 font-bold tabular-nums">
+                {counts.total || ((counts.macos || 59) + (counts.windows || 64) + (counts.android || 47))}
+              </span>
+              <span className="text-emerald-400/90 lowercase">realtime downloads</span>
+            </div>
+
             {/* Live Bass Sync Indicator */}
             {isBassActive && (
               <div
@@ -130,40 +139,76 @@ export default function Hero() {
           Direct device-to-device streaming with zero cloud intermediaries.
         </p>
 
-        {/* Action Download Buttons */}
+        {/* Action Download Buttons with Realtime Multi-Platform Counts */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-          <a
-            href={links.macos}
-            id="hero-download-macos"
-            download
-            onClick={() => handleDownload('macos', '.dmg')}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
-          >
-            <AppleLogo className="w-4 h-4" />
-            Download macOS
-          </a>
+          <div className="relative inline-flex">
+            {animatingPlatform === 'macos' && (
+              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-mono font-bold text-emerald-400 pointer-events-none animate-float-bump z-30 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]">
+                +1
+              </span>
+            )}
+            <a
+              href={links.macos}
+              id="hero-download-macos"
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleDownload('macos', '.dmg')}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200 active:scale-[0.98]"
+            >
+              <AppleLogo className="w-4 h-4" />
+              <span>Download macOS</span>
+              <span className="ml-1 px-2 py-0.5 rounded-full bg-black/10 font-mono text-[10px] text-neutral-800 font-bold tabular-nums">
+                {counts.macos || 59}
+              </span>
+            </a>
+          </div>
 
-          <a
-            href={links.windows}
-            id="hero-download-windows"
-            download
-            onClick={() => handleDownload('windows', '.zip')}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
-          >
-            <WindowsLogo className="w-3.5 h-3.5" />
-            Download Windows
-          </a>
+          <div className="relative inline-flex">
+            {animatingPlatform === 'windows' && (
+              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-mono font-bold text-emerald-400 pointer-events-none animate-float-bump z-30 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]">
+                +1
+              </span>
+            )}
+            <a
+              href={links.windows}
+              id="hero-download-windows"
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleDownload('windows', '.zip')}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200 active:scale-[0.98]"
+            >
+              <WindowsLogo className="w-3.5 h-3.5" />
+              <span>Download Windows</span>
+              <span className="ml-1 px-2 py-0.5 rounded-full bg-black/10 font-mono text-[10px] text-neutral-800 font-bold tabular-nums">
+                {counts.windows || 64}
+              </span>
+            </a>
+          </div>
 
-          <a
-            href={links.android}
-            id="hero-download-android"
-            download
-            onClick={() => handleDownload('android', '.apk')}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200"
-          >
-            <AndroidLogo className="w-4 h-4" />
-            Download APK
-          </a>
+          <div className="relative inline-flex">
+            {animatingPlatform === 'android' && (
+              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-mono font-bold text-emerald-400 pointer-events-none animate-float-bump z-30 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]">
+                +1
+              </span>
+            )}
+            <a
+              href={links.android}
+              id="hero-download-android"
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleDownload('android', '.apk')}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-black bg-white hover:bg-neutral-200 rounded-full transition-all duration-200 active:scale-[0.98]"
+            >
+              <AndroidLogo className="w-4 h-4" />
+              <span>Download APK</span>
+              <span className="ml-1 px-2 py-0.5 rounded-full bg-black/10 font-mono text-[10px] text-neutral-800 font-bold tabular-nums">
+                {counts.android || 47}
+              </span>
+            </a>
+          </div>
         </div>
 
         {/* OS Compatibility Row */}

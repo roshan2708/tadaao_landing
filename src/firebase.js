@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported, logEvent } from "firebase/analytics";
-import { getFirestore, doc, onSnapshot, getDoc, setDoc, increment, collection, addDoc } from "firebase/firestore";
+import { getFirestore, doc, onSnapshot, setDoc, increment, collection, addDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration from environment variables
 const firebaseConfig = {
@@ -73,20 +73,35 @@ export function subscribeToFirebaseDownloads(onUpdate, onError) {
 /**
  * Increment the download count dynamically in Firebase Firestore
  * @param {string} platform - 'macos' | 'windows' | 'android'
+ * @param {string} [fileFormat] - '.dmg' | '.zip' | '.apk'
  */
-export async function incrementFirebaseDownloadCount(platform) {
+export async function incrementFirebaseDownloadCount(platform, fileFormat = "") {
   try {
+    const validPlatforms = ['macos', 'windows', 'android'];
+    const cleanPlatform = validPlatforms.includes(platform?.toLowerCase()) ? platform.toLowerCase() : 'macos';
     const configDocRef = doc(db, "config", "downloads");
-    const countKey = `${platform}_count`;
+    const countKey = `${cleanPlatform}_count`;
+
+    // 1. Atomically increment aggregated counter
     await setDoc(
       configDocRef,
       {
         [countKey]: increment(1),
         total_downloads: increment(1),
         last_downloaded_at: new Date().toISOString(),
+        last_platform_downloaded: cleanPlatform,
       },
       { merge: true }
     );
+
+    // 2. Log individual download event for estimated history & analytics tracking
+    await addDoc(collection(db, "download_events"), {
+      platform: cleanPlatform,
+      fileFormat: fileFormat || "",
+      timestamp: new Date().toISOString(),
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "",
+      referrer: typeof document !== "undefined" ? document.referrer : "",
+    });
   } catch (err) {
     console.warn("Could not increment Firestore count:", err);
   }

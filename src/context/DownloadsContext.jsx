@@ -7,10 +7,12 @@ const DownloadsContext = createContext(null);
 export function DownloadsProvider({ children }) {
   const [links, setLinks] = useState(DOWNLOAD_LINKS);
   const [counts, setCounts] = useState(() => {
-    return PLATFORM_INFO.reduce((acc, p) => {
+    const base = PLATFORM_INFO.reduce((acc, p) => {
       acc[p.id] = p.downloadsCount;
       return acc;
     }, {});
+    base.total = Object.values(base).reduce((a, b) => a + b, 0);
+    return base;
   });
   const [isFirebaseSynced, setIsFirebaseSynced] = useState(false);
   const [animatingPlatform, setAnimatingPlatform] = useState(null);
@@ -28,16 +30,26 @@ export function DownloadsProvider({ children }) {
           android: data.android || prev.android,
         }));
 
-        // Update counts if present in Firestore
-        setCounts((prev) => ({
-          macos: data.macos_count !== undefined ? Number(data.macos_count) : prev.macos,
-          windows: data.windows_count !== undefined ? Number(data.windows_count) : prev.windows,
-          android: data.android_count !== undefined ? Number(data.android_count) : prev.android,
-        }));
+        // Update counts in realtime from Firestore
+        setCounts((prev) => {
+          const macos = data.macos_count !== undefined ? Number(data.macos_count) : (prev.macos || 58);
+          const windows = data.windows_count !== undefined ? Number(data.windows_count) : (prev.windows || 64);
+          const android = data.android_count !== undefined ? Number(data.android_count) : (prev.android || 47);
+          const total = data.total_downloads !== undefined 
+            ? Number(data.total_downloads) 
+            : (macos + windows + android);
+
+          return {
+            macos,
+            windows,
+            android,
+            total,
+          };
+        });
 
         setIsFirebaseSynced(true);
       },
-      (error) => {
+      (_error) => {
         // Fallback silently to static constants if Firestore is not configured yet
         console.info('Using local fallback download links (Firestore sync pending configuration)');
       }
@@ -52,8 +64,8 @@ export function DownloadsProvider({ children }) {
     // 1. Log event in Firebase Analytics
     trackDownload(platformId, fileFormat);
 
-    // 2. Increment real count in Firebase Firestore
-    incrementFirebaseDownloadCount(platformId);
+    // 2. Increment real count in Firebase Firestore & record event
+    incrementFirebaseDownloadCount(platformId, fileFormat);
 
     // 3. Trigger dynamic animation on UI counter badge
     setAnimatingPlatform(platformId);
@@ -61,11 +73,16 @@ export function DownloadsProvider({ children }) {
       setAnimatingPlatform(null);
     }, 1200);
 
-    // 4. Optimistically update local count for instantaneous responsiveness
-    setCounts((prev) => ({
-      ...prev,
-      [platformId]: (prev[platformId] || 50) + 1,
-    }));
+    // 4. Optimistically update local count instantaneously for snappy user feedback
+    setCounts((prev) => {
+      const nextPlatformCount = (prev[platformId] || 0) + 1;
+      const nextTotal = (prev.total || 0) + 1;
+      return {
+        ...prev,
+        [platformId]: nextPlatformCount,
+        total: nextTotal,
+      };
+    });
   };
 
   return (
