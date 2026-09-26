@@ -2,15 +2,15 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported, logEvent } from "firebase/analytics";
 import { getFirestore, doc, onSnapshot, getDoc, setDoc, increment, collection, addDoc } from "firebase/firestore";
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyAbyfpbaLZ3ldnlAtv_YHEL62jdzzSyQds",
-  authDomain: "tadaao-93557.firebaseapp.com",
-  projectId: "tadaao-93557",
-  storageBucket: "tadaao-93557.firebasestorage.app",
-  messagingSenderId: "361687242919",
-  appId: "1:361687242919:web:c650510ec289cb5cf4a382",
-  measurementId: "G-JC8WF2VTT4"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase App
